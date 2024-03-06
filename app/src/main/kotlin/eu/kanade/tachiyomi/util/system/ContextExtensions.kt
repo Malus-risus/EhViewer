@@ -6,24 +6,23 @@ import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.provider.Settings
-import android.view.Display
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.core.graphics.ColorUtils
 import com.hippo.ehviewer.R
 import eu.kanade.tachiyomi.ui.reader.setting.ReaderPreferences
 import kotlin.math.roundToInt
-import splitties.systemservices.windowManager
 
 @ColorInt
 fun Context.getResourceColor(@AttrRes resource: Int, alphaFactor: Float = 1f): Int {
-    val color = obtainStyledAttributes(intArrayOf(resource)).use {
-        it.getColor(0, Color.TRANSPARENT)
-    }
+    val typedArray = obtainStyledAttributes(intArrayOf(resource))
+    val color = typedArray.getColor(0, 0)
+    typedArray.recycle()
+
     return if (alphaFactor != 1f) {
-        ColorUtils.setAlphaComponent(color, (color.alpha * alphaFactor).roundToInt())
+        val alpha = (color.alpha * alphaFactor).roundToInt()
+        Color.argb(alpha, color.red, color.green, color.blue)
     } else color
 }
 
